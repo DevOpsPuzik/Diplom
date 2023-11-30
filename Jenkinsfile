@@ -1,7 +1,3 @@
-Dima, [30.11.23 23:48]
-jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker
-
-Dima, [30.11.23 23:53]
 pipeline {
     agent any
 
