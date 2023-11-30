@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_COMPOSE_VERSION = '1.29.2'
-        SUDO_PASSWORD = 'your_sudo_password'
+        SUDO_PASSWORD = '1012'
     }
 
     stages {
