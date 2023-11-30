@@ -1,3 +1,7 @@
+Dima, [30.11.23 23:48]
+jenkins ALL=(ALL) NOPASSWD: /usr/bin/docker
+
+Dima, [30.11.23 23:53]
 pipeline {
     agent any
 
@@ -31,6 +35,9 @@ pipeline {
         always {
             echo 'This runs always'
             // Добавьте дополнительные шаги или логирование здесь
+
+            // Добавленная строка:
+            sh 'sudo -E apt-get update -qq >/dev/null'
         }
     }
 }
