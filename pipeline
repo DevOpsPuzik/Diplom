@@ -30,7 +30,7 @@ pipeline {
         always {
             echo 'This runs always'
             // Update packages without sudo
-            sh 'apt-get update -qq'
+            //sh 'apt-get update -qq'
         }
     }
 }
