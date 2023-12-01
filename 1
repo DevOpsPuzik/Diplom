@@ -15,16 +15,19 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 script {
-                    // Установка Docker и Docker Compose
+                    // Установка Docker
                     sh 'curl -fsSL https://get.docker.com/ | sh'
-                    
-                    // Установка Docker Compose без использования sudo
+
+                    // Перенос пути установки Docker в PATH
+                    sh 'export PATH="/usr/local/bin:$PATH"'
+
+                    // Установка Docker Compose
                     sh "curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) -o $HOME/docker-compose"
                     sh 'chmod +x $HOME/docker-compose'
-                    
+
                     // Добавление пути до установленного Docker Compose в PATH
                     sh 'export PATH=$HOME:$PATH'
-                    
+
                     // Запуск Docker Compose для разворачивания сервисов
                     sh 'docker-compose up -d'
                 }
@@ -34,11 +37,8 @@ pipeline {
         stage('Declarative: Post Actions') {
             post {
                 always {
-                    // Команды, выполняемые всегда после завершения пайплайна
-                    script {
-                        // Обновление пакетов в системе без использования sudo
-                        sh 'apt-get update -qq'
-                    }
+                    // Обновление пакетов в системе без использования sudo
+                    sh 'apt-get update -qq'
                 }
             }
         }
