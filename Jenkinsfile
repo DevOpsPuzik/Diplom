@@ -17,7 +17,7 @@ pipeline {
             // Шаги, которые выполняются всегда, даже если произошла ошибка
             script {
                 // Шаги для перенаправления запросов с Nginx на Apache
-                sh 'docker exec nginx-container /bin/bash -c "echo \\"proxy_pass http://apache-container;\\" > /etc/nginx/conf.d/default.conf"'
+                sh 'docker exec nginx-container /bin/bash -c "echo \\"proxy_pass http://apache-container:8080;\\" > /etc/nginx/conf.d/default.conf"'
                 sh 'docker exec nginx-container /bin/bash -c "nginx -s reload"'
             }
         }
