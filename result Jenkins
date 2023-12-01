@@ -1,0 +1,108 @@
+Started by user Puzik D
+Obtained Jenkinsfile from git https://github.com/DevOpsPuzik/Diplom
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/Puzik
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Puzik/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/DevOpsPuzik/Diplom # timeout=10
+Fetching upstream changes from https://github.com/DevOpsPuzik/Diplom
+ > git --version # timeout=10
+ > git --version # 'git version 2.40.1'
+ > git fetch --tags --force --progress -- https://github.com/DevOpsPuzik/Diplom +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision 3acba1772b3aae3b6c26fc3235e217d6a4cf3334 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 3acba1772b3aae3b6c26fc3235e217d6a4cf3334 # timeout=10
+Commit message: "Update docker-compose.yml"
+ > git rev-list --no-walk 3acba1772b3aae3b6c26fc3235e217d6a4cf3334 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Puzik/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/DevOpsPuzik/Diplom # timeout=10
+Fetching upstream changes from https://github.com/DevOpsPuzik/Diplom
+ > git --version # timeout=10
+ > git --version # 'git version 2.40.1'
+ > git fetch --tags --force --progress -- https://github.com/DevOpsPuzik/Diplom +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+Checking out Revision 3acba1772b3aae3b6c26fc3235e217d6a4cf3334 (refs/remotes/origin/master)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 3acba1772b3aae3b6c26fc3235e217d6a4cf3334 # timeout=10
+Commit message: "Update docker-compose.yml"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build and Run Docker Compose)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ docker-compose up -d
+Creating network "puzik_default" with the default driver
+Creating puzik_apache_1 ... 
+[1A[2K
+Creating puzik_apache_1 ... [32mdone[0m
+[1BCreating puzik_nginx_1  ... 
+[1A[2K
+Creating puzik_nginx_1  ... [32mdone[0m
+[1B
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Configure Nginx)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sleep
+Sleeping for 20 секунд
+[Pipeline] sh
++ docker exec puzik_nginx_1 /bin/bash -c echo "proxy_pass http://apache:8081;" > /etc/nginx/conf.d/default.conf
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ docker-compose down
+Stopping puzik_nginx_1  ... 
+Stopping puzik_apache_1 ... 
+[2A[2K
+Stopping puzik_nginx_1  ... [32mdone[0m
+[2B[1A[2K
+Stopping puzik_apache_1 ... [32mdone[0m
+[1BRemoving puzik_nginx_1  ... 
+Removing puzik_apache_1 ... 
+[2A[2K
+Removing puzik_nginx_1  ... [32mdone[0m
+[2B[1A[2K
+Removing puzik_apache_1 ... [32mdone[0m
+[1BRemoving network puzik_default
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
