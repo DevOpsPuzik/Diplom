@@ -15,33 +15,32 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 script {
-                    try {
-                        // Установка Docker
-                        sh 'curl -fsSL https://get.docker.com/ | sh'
-                        
-                        // Проверка версии Docker Compose и обновление при необходимости
-                        def currentComposeVersion = sh(script: 'docker-compose version --short', returnStdout: true).trim()
-                        
-                        if (currentComposeVersion != DOCKER_COMPOSE_VERSION) {
-                            sh "sudo curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
-                            sh 'sudo chmod +x /usr/local/bin/docker-compose'
-                        }
-
-                        // Запуск Docker Compose для разворачивания сервисов
-                        sh 'docker-compose up -d'
-                    } catch (Exception e) {
-                        // Обработка ошибок
-                        echo "Ошибка: ${e.message}"
-                        currentBuild.result = 'FAILURE'
-                    }
+                    // Установка Docker и Docker Compose
+                    sh 'curl -fsSL https://get.docker.com/ | sh'
+                    
+                    // Установка Docker Compose без использования sudo
+                    sh "curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) -o $HOME/docker-compose"
+                    sh 'chmod +x $HOME/docker-compose'
+                    
+                    // Добавление пути до установленного Docker Compose в PATH
+                    sh 'export PATH=$HOME:$PATH'
+                    
+                    // Запуск Docker Compose для разворачивания сервисов
+                    sh 'docker-compose up -d'
                 }
             }
         }
-    }
 
-    post {
-        always {
-            // Завершающий шаг - можно добавить тут дополнительные проверки, логирование и т. д.
+        stage('Declarative: Post Actions') {
+            post {
+                always {
+                    // Команды, выполняемые всегда после завершения пайплайна
+                    script {
+                        // Обновление пакетов в системе без использования sudo
+                        sh 'apt-get update -qq'
+                    }
+                }
+            }
         }
     }
 }
