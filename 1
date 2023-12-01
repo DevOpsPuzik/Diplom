@@ -15,13 +15,25 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 script {
-                    // Установка Docker и Docker Compose
-                    sh 'curl -fsSL https://get.docker.com/ | sh'
-                    sh "sudo curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
-                    sh 'sudo chmod +x /usr/local/bin/docker-compose'
-                    
-                    // Запуск Docker Compose для разворачивания сервисов
-                    sh 'docker-compose up -d'
+                    try {
+                        // Установка Docker
+                        sh 'curl -fsSL https://get.docker.com/ | sh'
+                        
+                        // Проверка версии Docker Compose и обновление при необходимости
+                        def currentComposeVersion = sh(script: 'docker-compose version --short', returnStdout: true).trim()
+                        
+                        if (currentComposeVersion != DOCKER_COMPOSE_VERSION) {
+                            sh "sudo curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
+                            sh 'sudo chmod +x /usr/local/bin/docker-compose'
+                        }
+
+                        // Запуск Docker Compose для разворачивания сервисов
+                        sh 'docker-compose up -d'
+                    } catch (Exception e) {
+                        // Обработка ошибок
+                        echo "Ошибка: ${e.message}"
+                        currentBuild.result = 'FAILURE'
+                    }
                 }
             }
         }
