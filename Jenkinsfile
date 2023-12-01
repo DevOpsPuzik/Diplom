@@ -1,29 +1,26 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_COMPOSE_VERSION = '1.29.2'
-    }
-
     stages {
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
-                checkout scm
+                script {
+                    checkout scm
+                }
             }
         }
 
         stage('Build and Deploy') {
             steps {
                 script {
-                    // Установка Docker и Docker Compose
+                    // Install Docker without sudo
                     sh 'curl -fsSL https://get.docker.com/ | sh'
 
-                    // Установка Docker Compose с использованием sudo без пароля
-                    sh "sudo -E curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-\$(uname -s)-\$(uname -m) -o /usr/local/bin/docker-compose"
-                    sh 'sudo chmod +x /usr/local/bin/docker-compose'
+                    // Sleep for 20 seconds to wait for Docker to install
+                    sleep(time: 20, unit: 'SECONDS')
 
-                    // Запуск Docker Compose для разворачивания сервисов
-                    sh 'docker-compose up -d'
+                    // Run Docker-compose without sudo in privileged mode
+                    sh 'docker-compose up -d --privileged'
                 }
             }
         }
@@ -32,10 +29,8 @@ pipeline {
     post {
         always {
             echo 'This runs always'
-            // Добавьте дополнительные шаги или логирование здесь
-
-            // Обновление пакетов без запроса пароля
-            sh 'sudo -E apt-get update -qq >/dev/null'
+            // Update packages without sudo
+            sh 'apt-get update -qq'
         }
     }
 }
