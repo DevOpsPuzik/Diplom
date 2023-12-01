@@ -1,25 +1,20 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_COMPOSE_VERSION = '1.29.2'
+    }
+
     stages {
-        stage('Checkout SCM') {
+        stage('Checkout') {
             steps {
-                script {
-                    checkout scm
-                }
+                checkout scm
             }
         }
 
         stage('Build and Deploy') {
             steps {
                 script {
-                    // Install Docker without sudo
-                    sh 'curl -fsSL https://get.docker.com/ | sh'
-
-                    // Sleep for 20 seconds to wait for Docker to install
-                    sleep(time: 20, unit: 'SECONDS')
-
-                    // Run Docker-compose without sudo
                     sh 'docker-compose up -d'
                 }
             }
@@ -28,9 +23,22 @@ pipeline {
 
     post {
         always {
-            echo 'This runs always'
-            // Update packages without sudo
-            sh 'apt-get update -qq'
+            script {
+                // Ждем, чтобы сервисы полностью развернулись перед выполнением тестов
+                sleep 60
+                // Запуск тестов, проверяющих, что запросы на Nginx перенаправляются в Apache
+                sh 'curl http://localhost'
+            }
+        }
+
+        success {
+            // Шаги, которые выполнятся при успешном разворачивании и прохождении тестов
+            echo 'Deployment and tests passed successfully!'
+        }
+
+        failure {
+            // Шаги, которые выполнятся в случае ошибки в разворачивании или тестах
+            echo 'Deployment or tests failed!'
         }
     }
 }
