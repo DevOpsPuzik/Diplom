@@ -1,30 +1,36 @@
 pipeline {
     agent any
-    
+
     stages {
-        stage('Checkout') {
+        stage('Checkout SCM') {
             steps {
-                checkout scm
+                script {
+                    checkout scm
+                }
             }
         }
 
         stage('Build and Deploy') {
             steps {
                 script {
-                    // Установка Docker
+                    // Install Docker
                     sh 'curl -fsSL https://get.docker.com/ | sh'
 
-                    // Перенос пути установки Docker в PATH
-                    sh 'export PATH="/usr/local/bin:$PATH"'
+                    // Sleep for 20 seconds to wait for Docker to install
+                    sleep(time: 20, unit: 'SECONDS')
 
-                    // Установка Docker Compose
-                    sh 'sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose'
-                    sh 'sudo chmod +x /usr/local/bin/docker-compose'
-
-                    // Запуск Docker Compose для разворачивания сервисов
+                    // Run Docker-compose
                     sh 'docker-compose up -d'
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'This runs always'
+            // Update packages
+            sh 'apt-get update -qq'
         }
     }
 }
