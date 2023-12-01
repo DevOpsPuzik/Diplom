@@ -13,13 +13,13 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 script {
-                    // Install Docker
+                    // Install Docker without sudo
                     sh 'curl -fsSL https://get.docker.com/ | sh'
 
                     // Sleep for 20 seconds to wait for Docker to install
                     sleep(time: 20, unit: 'SECONDS')
 
-                    // Run Docker-compose
+                    // Run Docker-compose without sudo
                     sh 'docker-compose up -d'
                 }
             }
@@ -29,7 +29,7 @@ pipeline {
     post {
         always {
             echo 'This runs always'
-            // Update packages
+            // Update packages without sudo
             sh 'apt-get update -qq'
         }
     }
