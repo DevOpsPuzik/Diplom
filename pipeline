@@ -29,12 +29,8 @@ pipeline {
 
     post {
         always {
-            stage('Cleanup') {
-                steps {
-                    script {
-                        sh 'docker-compose down'
-                    }
-                }
+            script {
+                sh 'docker-compose down'
             }
         }
     }
