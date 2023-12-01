@@ -2,25 +2,11 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout SCM') {
+        stage('Build and Run Docker Compose') {
             steps {
                 script {
-                    checkout scm
-                }
-            }
-        }
-
-        stage('Build and Deploy') {
-            steps {
-                script {
-                    // Install Docker without sudo
-                    sh 'curl -fsSL https://get.docker.com/ | sh'
-
-                    // Sleep for 20 seconds to wait for Docker to install
-                    sleep(time: 20, unit: 'SECONDS')
-
-                    // Run Docker-compose without sudo in privileged mode
-                    sh 'docker-compose up -d --privileged'
+                    // Шаги для сборки и запуска Docker Compose
+                    sh 'docker-compose up -d'
                 }
             }
         }
@@ -28,9 +14,12 @@ pipeline {
 
     post {
         always {
-            echo 'This runs always'
-            // Update packages without sudo
-            sh 'apt-get update -qq'
+            // Шаги, которые выполняются всегда, даже если произошла ошибка
+            script {
+                // Шаги для перенаправления запросов с Nginx на Apache
+                sh 'docker exec nginx-container /bin/bash -c "echo \\"proxy_pass http://apache-container;\\" > /etc/nginx/conf.d/default.conf"'
+                sh 'docker exec nginx-container /bin/bash -c "nginx -s reload"'
+            }
         }
     }
 }
