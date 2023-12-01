@@ -4,11 +4,10 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "8080:80"
+      - "8081:80"  # Change this line to use a different host port
     depends_on:
       - apache
   apache:
     image: httpd:latest
     ports:
-      - "8081:80"
-
+      - "8080:80"
