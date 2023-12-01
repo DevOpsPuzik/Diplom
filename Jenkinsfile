@@ -2,11 +2,26 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build and Run Docker Compose') {
             steps {
                 script {
-                    // Шаги для сборки и запуска Docker Compose
                     sh 'docker-compose up -d'
+                }
+            }
+        }
+
+        stage('Configure Nginx') {
+            steps {
+                script {
+                    // Wait for Nginx to start (you may need to adjust the sleep time)
+                    sleep 20
+                    sh 'docker exec puzik_nginx_1 /bin/bash -c "echo \\"proxy_pass http://apache:8081;\\" > /etc/nginx/conf.d/default.conf"'
                 }
             }
         }
@@ -14,11 +29,12 @@ pipeline {
 
     post {
         always {
-            // Шаги, которые выполняются всегда, даже если произошла ошибка
-            script {
-                // Шаги для перенаправления запросов с Nginx на Apache
-                sh 'docker exec nginx /bin/bash -c "echo \\"proxy_pass http://apache:8081;\\" > /etc/nginx/conf.d/default.conf"'
-                sh 'docker exec nginx /bin/bash -c "nginx -s reload"'
+            stage('Cleanup') {
+                steps {
+                    script {
+                        sh 'docker-compose down'
+                    }
+                }
             }
         }
     }
