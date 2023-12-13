@@ -12,8 +12,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose up -d'
-                    // Добавим ожидание для полного запуска сервисов
-                    sh 'docker-compose exec diplom_nginx_1 wait-for-it apache:8083 -t 0 -- echo "Apache is up"'
+                    sleep 30  // Подождем 30 секунд для полного запуска сервисов (можно регулировать время)
                 }
             }
         }
@@ -23,6 +22,14 @@ pipeline {
                 script {
                     // Используем правильное имя контейнера
                     sh 'docker exec diplom_nginx_1 /bin/bash -c "echo \\"proxy_pass http://apache:8083;\\" > /etc/nginx/conf.d/default.conf"'
+                }
+            }
+        }
+
+        stage('Check Nginx Configuration') {
+            steps {
+                script {
+                    sh 'docker-compose exec diplom_nginx_1 nginx -t'  // Проверим конфигурацию Nginx
                 }
             }
         }
