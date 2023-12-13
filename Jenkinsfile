@@ -12,7 +12,9 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose up -d'
-                    sleep 30  // Подождем 30 секунд для полного запуска сервисов (можно регулировать время)
+                    sleep 23  // Увеличьте время ожидания до 23 секунд (или более) для полного запуска сервисов
+                    sh 'docker-compose ps'
+                    sh 'docker-compose logs'  // Посмотрите логи контейнеров
                 }
             }
         }
@@ -23,14 +25,6 @@ pipeline {
                     // Используем правильное имя контейнера
                     sh 'docker exec diplom_nginx_1 /bin/bash -c "echo \\"proxy_pass http://apache:8083;\\" > /etc/nginx/conf.d/default.conf"'
                 }
-            }
-        }
-    }
-
-    post {
-        always {
-            script {
-                sh 'docker-compose down'
             }
         }
     }
