@@ -36,11 +36,10 @@ pipeline {
         }
     }
 
-    post {
-       always {
-         script {
-             sh 'docker-compose down'
-            }
+        always {
+        script {
+            // Можно не останавливать контейнеры, а просто сообщить об окончании работы
+            echo 'Pipeline completed'
         }
     }
 }
