@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build and Run Docker Compose') {
+            steps {
+                script {
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
+
+        stage('Configure Nginx') {
+            steps {
+                script {
+                    // Wait for Nginx to start (you may need to adjust the sleep time)
+                    sleep 20
+                    sh 'docker exec puzik_nginx_1 /bin/bash -c "echo \\"proxy_pass http://apache:8081;\\" > /etc/nginx/conf.d/default.conf"'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                sh 'docker-compose down'
+            }
+        }
+    }
+}
