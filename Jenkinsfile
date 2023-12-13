@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                         sleep 20
-                    sh 'docker exec puzik_nginx_1 /bin/bash -c "echo \\"proxy_pass http://apache:8082;\\" > /etc/nginx/conf.d/default.conf"'
+                    sh 'docker exec puzik_nginx_1 /bin/bash -c "echo \\"proxy_pass http://apache:8081;\\" > /etc/nginx/conf.d/default.conf"'
                 }
             }
         }
