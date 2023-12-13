@@ -25,7 +25,7 @@ pipeline {
                     sleep 20
                     def nginxContainerId = sh(script: 'docker-compose ps -q nginx', returnStdout: true).trim()
                     sh "docker inspect --format='{{.State.Running}}' $nginxContainerId"
-                    sh "docker exec $nginxContainerId /bin/bash -c \"echo 'proxy_pass http://apache:8083;' > /etc/nginx/conf.d/default.conf\""
+                    sh "docker exec $nginxContainerId /bin/bash -c \"echo 'proxy_pass http://apache:8084;' > /etc/nginx/conf.d/default.conf\""
                 }
             }
         }
