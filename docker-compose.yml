@@ -4,10 +4,10 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "8086:80"
+      - "8084:80"
     depends_on:
       - apache
   apache:
     image: httpd:latest
     ports:
-      - "8087:80"
+      - "8083:80"
