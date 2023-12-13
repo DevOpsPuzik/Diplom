@@ -37,8 +37,10 @@ pipeline {
     }
 
         post {
+        success {
             script {
-                echo 'Pipeline completed'
+                echo 'Pipeline completed successfully'
+            }
         }
     }
 }
