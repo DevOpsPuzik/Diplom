@@ -36,9 +36,9 @@ pipeline {
         }
     }
 
-        always {
-        script {
-        echo 'Pipeline completed'
+        post {
+            script {
+                echo 'Pipeline completed'
         }
     }
 }
