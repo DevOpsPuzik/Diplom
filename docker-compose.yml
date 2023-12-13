@@ -4,7 +4,7 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "8088:80"
+      - "8090:80"
     depends_on:
       - apache
   apache:
