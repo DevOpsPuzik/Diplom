@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8084:80"
+    depends_on:
+      - apache
+  apache:
+    image: httpd:latest
+    ports:
+      - "8083:80"
