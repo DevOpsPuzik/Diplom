@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose up -d'
-                                sh 'docker-compose exec diplom_nginx_1 wait-for-it apache:8083 -t 0 -- echo "Apache is up"'
+                                        sh 'docker-compose exec diplom_nginx_1 wait-for-it apache:8083 -t 0 -- echo "Apache is up"'
                 }
             }
         }
@@ -20,7 +20,7 @@ pipeline {
         stage('Configure Nginx') {
             steps {
                 script {
-                    sh 'docker exec diplom2_nginx_1 /bin/bash -c "echo \\"proxy_pass http://apache:8083;\\" > /etc/nginx/conf.d/default.conf"'
+                                   sh 'docker exec diplom_nginx_1 /bin/bash -c "echo \\"proxy_pass http://apache:8083;\\" > /etc/nginx/conf.d/default.conf"'
                 }
             }
         }
