@@ -11,8 +11,11 @@ pipeline {
         stage('Build and Run Docker Compose') {
             steps {
                 script {
-                    sh 'docker-compose up -d'
-                    sleep 30 
+                    // Переход в каталог с docker-compose.yml
+                    dir("/home/puzik/Diplom") {
+                        sh 'docker-compose up -d'
+                        sleep 30
+                    }
                 }
             }
         }
@@ -20,9 +23,8 @@ pipeline {
         stage('Configure Nginx') {
             steps {
                 script {
-                        sleep 20
-
-                               def nginxContainerId = sh(script: 'docker-compose ps -q nginx', returnStdout: true).trim()
+                    sleep 20
+                    def nginxContainerId = sh(script: 'docker-compose ps -q nginx', returnStdout: true).trim()
                     sh "docker inspect --format='{{.State.Running}}' $nginxContainerId"
                     sh "docker exec $nginxContainerId /bin/bash -c \"echo 'proxy_pass http://apache:8083;' > /etc/nginx/conf.d/default.conf\""
                 }
@@ -30,7 +32,7 @@ pipeline {
         }
     }
 
-        post {
+    post {
         success {
             script {
                 echo 'Pipeline completed successfully'
