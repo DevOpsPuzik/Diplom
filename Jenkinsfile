@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     // Используем правильное имя контейнера
-                    sh 'docker exec diplom2_nginx_1 /bin/bash -c "echo \\"proxy_pass http://apache:8083;\\" > /etc/nginx/conf.d/default.conf"'
+                    sh 'docker exec diplom_nginx_1 /bin/bash -c "echo \\"proxy_pass http://apache:8083;\\" > /etc/nginx/conf.d/default.conf"'
                 }
             }
         }
