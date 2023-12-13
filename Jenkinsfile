@@ -12,7 +12,7 @@ pipeline {
             steps {
                 script {
                     // Переход в каталог с docker-compose.yml
-                    dir("/home/puzik/Diplom") {
+                    dir("~/home/puzik/Diplom") {
                         sh 'docker-compose up -d'
                         sleep 30
                     }
