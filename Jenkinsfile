@@ -38,8 +38,7 @@ pipeline {
 
         always {
         script {
-            // Можно не останавливать контейнеры, а просто сообщить об окончании работы
-            echo 'Pipeline completed'
+        echo 'Pipeline completed'
         }
     }
 }
